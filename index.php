@@ -7,7 +7,7 @@
  * folder to redirect unkown images
  *
  * eg:
- * ErrorDocument 404 /modules/default_images/index.php
+ * ErrorDocument 404 /cms/modules/default_images/index.php
  *
  * @author daithi coombes
  */

@@ -46,6 +46,10 @@ class DefaultImage{
 		return $obj->newInstanceArgs( $args );
 	}
 
+	public function load_image(){
+		
+	}
+
 	public function create(){
 
 		//construct image

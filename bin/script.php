@@ -28,6 +28,39 @@ require_once( BASE_DIR . '/lib/php_image_magician.php');
  * @todo get vars from cli arguments if available
  */
 
+//cli parse arguments
+
+//validate arguments
+
+//load default image
+	//create new image?
+	//get image
+
+//format(width, height, text)
+//display
+
+
+//get arguments from CLI or global scope
+$arugments = CLI::factory()
+	->validate_arguments()
+	->get_arguments();
+
+//error check $arguments
+if( getclass($arguments)=='Error' )
+	die( 'Error getting paramaters: '.$arguments->get_message() );
+
+//get/set the default image
+$default_image = DefaultImage::factory('create')
+	->set_width( $arguments->width )
+	->set_height( $arguments->height )
+	->set_color( $arguments->color );
+
+//resize and format image
+DefaultImage::factory('format')
+	->set_image( $default_image )
+	->set_text( $arguments->text )
+	->resize()
+	->display();
 
 //if default color image doesn't exist then create it
 $info = pathinfo($filename);
