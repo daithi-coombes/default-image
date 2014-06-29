@@ -66,7 +66,7 @@ if( Error::is_error($arguments) )
 $default_image = DefaultImager::factory()
 	->set_worker( 'Image' )
 	->set(array(
-		'color' 	=> $arguments['color'],
+		'color' 	=> $arguments['background'],
 		'filename'  => $arguments['filename']
 	))
 	->create();
