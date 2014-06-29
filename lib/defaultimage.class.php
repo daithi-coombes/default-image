@@ -53,17 +53,18 @@ class DefaultImager{
 
 	public function create(){
 
+		if( empty($this->_filename) || !$this->_filename )
+			return new Error('Invalid filename');
+
 		$this->worker = self::factory( $this->worker, $this->_width, $this->_height, $this->_color );
+		$requested_file = $this->_dir . '/' . $this->_filename;
+		$image = new DefaultImage( $requested_file );
 
-		//output image
-		if( !empty($this->_filename) ){
-			$filename = $this->_dir . '/' . $this->_filename . '-' . $this->_color . '.' . $this->_ext;
-			$this->worker->output( $this->_ext, $filename );
-		}
-		else
-			$this->worker->output( $this->_ext );
+		//create the file
+		if( !file_exists($image->filename) )
+			$this->worker->output( $image->info['extension'], $image->filename );
 
-		return $this;
+		return $image;
 	}
 
 	/**
@@ -89,5 +90,20 @@ class DefaultImager{
 		$this->worker = $class_name;
 
 		return $this;
+	}
+}
+
+/**
+ * Image datatype
+ */
+class DefaultImage{
+
+	public $info;
+	public $filename;
+
+	function __construct( $filename ){
+
+		$this->filename 	= $filename;
+		$this->info 		= pathinfo( $filename );
 	}
 }

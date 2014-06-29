@@ -79,7 +79,8 @@ if( getclass($default_image)=='Error' )
 	die( 'Error creating default image: '.$default_image->get_message() );
 
 //resize and format image
-DefaultImager::factory('imageLib')
+DefaultImager::factory()
+	->set_worker('imageLib')
 	->set_image( $default_image )
 	->set_text( $arguments->text )
 	->resize()
