@@ -128,6 +128,16 @@ class DefaultImager{
 	}
 
 	/**
+	 * Set color
+	 * @param string $color Hex color code
+	 */
+	public function set_color( $color ){
+
+		$this->_color = $color;
+		return $this;
+	}
+
+	/**
 	 * Set the font
 	 * @param string $font The absolute path to the ttf font (websafe fonts
 	 * have issues)

@@ -22,9 +22,10 @@ if( $_SERVER['REDIRECT_STATUS']=='404' ){
 	$image_extensions = array( 'jpg','gif','jpeg','png' );
 	$request_info = pathinfo( $_SERVER['REQUEST_URI'] );
 
-	preg_match('/([0-9]+)x([0-9]+)$/', $request_info['filename'], $matches);
+	preg_match('/([0-9]+)x([0-9]+)-?([a-fA-F0-9]{3,6})?$/', $request_info['filename'], $matches);
 	$_GET['width'] = $matches[1];
 	$_GET['height'] = $matches[2];
+	$_GET['background'] = $matches[3];
 }
 
 //static vars
