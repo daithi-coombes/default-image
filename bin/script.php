@@ -66,39 +66,24 @@ if( Error::is_error($arguments) )
 $default_image = DefaultImager::factory()
 	->set_worker( 'Image' )
 	->set(array(
-		'width' 	=> $arguments['width'],
-		'height' 	=> $arguments['height'],
 		'color' 	=> $arguments['color'],
 		'filename'  => $arguments['filename']
 	))
 	->create();
 
-var_dump($default_image);
 //error check $arguments
-if( get_class($default_image)=='Error' )
+if( Error::is_error($default_image) )
 	die( 'Error creating default image: '.$default_image->get_message() );
 
 //resize and format image
-DefaultImager::factory()
+$default_image = DefaultImager::factory()
 	->set_worker('imageLib')
 	->set_image( $default_image )
 	->set_font( $arguments['font'] )
 	->set_text( $arguments['text'] )
-	->resize()
+	->resize( $arguments['width'], $arguments['height'] )
 	->display();
 
-//if default color image doesn't exist then create it
-$info = pathinfo($filename);
-$filename = $dir.'/'.$info['filename'].'-'.$background.'.'.$info['extension'];
-if( !file_exists( $filename ) ){
-
-	$create = DefaultImage::factory('create', $width, $height, $background);
-	$create->output( $info['extension'], $filename );
-}
-
-
-$image = new imageLib('assets/images/default.png');
-
-$image->addText( $text, '20x20', 0, '#'.$color, 12, 0, $font );
-$image->cropImage( $width, $height );
-$image->displayImage();
+//error report
+if( Error::is_error($default_image) )
+	die(' Error displaying default image: '.$default_image->get_message() );

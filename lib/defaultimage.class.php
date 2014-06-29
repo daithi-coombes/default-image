@@ -21,9 +21,9 @@ class DefaultImager{
 	private $_filename	= '';
 	/* @var string Full path to font file */
 	private $_font 		= '';
-	private $_height	= 200;
+	private $_height 	= '640';
 	private $_text		= null;
-	private $_width		= 200;
+	private $_width 	= '960';
 	private $error 		= null;
 	/* @var DefaultImage A default image instance. @see ::set_image() */
 	private $image 		= null;
@@ -87,7 +87,7 @@ class DefaultImager{
 		if( $this->error )
 			return $this->error;
 
-		$this->worker->displayImage();
+		$this->worker->displayImage( $this->image->info['extension'] );
 	}
 
 	/**
@@ -95,12 +95,12 @@ class DefaultImager{
 	 * $this->image must hold a DefaultImage instance
 	 * @return DefaultImager Returns self for chaining.
 	 */
-	public function resize(){
+	public function resize( $width, $height ){
 
 		if( $this->error )
 			return $this;
 
-		$this->worker->cropImage( $this->_width, $this->_height );
+		$this->worker->cropImage( $width, $height );
 
 		return $this;
 	}
