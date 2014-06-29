@@ -15,6 +15,14 @@ require_once('php_image_magician.php');
 
 class DefaultImager{
 
+	/* @var integer Flag to disable default image caching */
+	const CACHE_OFF = 10;
+	/* @var integer Flag to enable default image caching */
+	const CACHE_ON = 11;
+
+	/* @var boolean Wether to create color templates for default images */
+	public $cache_image = true;
+
 	private $_color		= 'ffffff';
 	private $_dir		= 'assets/images';
 	private $_ext		= 'png';
@@ -71,7 +79,7 @@ class DefaultImager{
 		$image = new DefaultImage( $requested_file, $this->_color );
 
 		//create the file
-		if( !file_exists($image->filename) )
+		if( !file_exists($image->filename) && $this->cache_image )
 			$this->worker->output( $image->info['extension'], $image->filename );
 
 		return $image;
@@ -145,6 +153,21 @@ class DefaultImager{
 
 		//create worker
 		$this->worker = self::factory( $this->worker, $this->image->filename );		
+
+		return $this;
+	}
+
+	/**
+	 * Turn image cache on/off
+	 * @param boolean $state
+	 */
+	public function set_image_cache( $state ){
+
+		//set state
+		if( $state==self::CACHE_OFF )
+			$this->cache_image = false;
+		elseif( $state==self::CACHE_ON )
+			$this->cache_image = true;
 
 		return $this;
 	}
