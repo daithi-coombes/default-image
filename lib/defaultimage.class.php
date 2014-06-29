@@ -19,10 +19,15 @@ class DefaultImager{
 	private $_dir		= 'assets/images';
 	private $_ext		= 'png';
 	private $_filename	= '';
+	/* @var string Full path to font file */
+	private $_font 		= '';
 	private $_height	= 200;
 	private $_text		= null;
 	private $_width		= 200;
 	private $error 		= null;
+	/* @var DefaultImage A default image instance. @see ::set_image() */
+	private $image 		= null;
+	private $text 		= '';
 	private $worker		= '';
 
 	function __construct(){
@@ -51,6 +56,11 @@ class DefaultImager{
 		return $ret;
 	}
 
+	/**
+	 * Factory method to construct default image.
+	 * If image doesn't exist it will be created.
+	 * @return DefaultImage Returns a new DefaultImage
+	 */
 	public function create(){
 
 		if( empty($this->_filename) || !$this->_filename )
@@ -68,6 +78,34 @@ class DefaultImager{
 	}
 
 	/**
+	 * Print final image to stdout
+	 * @return mixed If error return Error instance, or DefaultImager on
+	 * success.
+	 */
+	public function display(){
+
+		if( $this->error )
+			return $this->error;
+
+		$this->worker->displayImage();
+	}
+
+	/**
+	 * Resize the default image.
+	 * $this->image must hold a DefaultImage instance
+	 * @return DefaultImager Returns self for chaining.
+	 */
+	public function resize(){
+
+		if( $this->error )
+			return $this;
+
+		$this->worker->cropImage( $this->_width, $this->_height );
+
+		return $this;
+	}
+
+	/**
 	 * Set class parameters
 	 * @param array $params An associative array of param value pairs
 	 */
@@ -77,6 +115,51 @@ class DefaultImager{
 			$param = '_'.$param;
 			$this->$param = $val;
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Set the font
+	 * @param string $font The absolute path to the ttf font (websafe fonts
+	 * have issues)
+	 */
+	public function set_font( $font ){
+
+		if( $this->error )
+			return $this;
+
+		$this->_font = $font;
+		return $this;
+	}
+
+	/**
+	 * Set the default image.
+	 * Constructs worker.
+	 * @param DefaultImage $default_image The default image instance created by
+	 * buliding an image worker.
+	 */
+	public function set_image( DefaultImage $default_image ){
+
+		$this->image = $default_image;
+
+		//create worker
+		$this->worker = self::factory( $this->worker, $this->image->filename );		
+
+		return $this;
+	}
+
+	/**
+	 * Set the text.
+	 * @param string $text Optional. Set the default image text.
+	 */
+	public function set_text( $text=null ){
+
+		if( $this->error )
+			return $this;
+
+		if( $text )
+			$this->worker->addText( $text, '20x20', 0, '#'.$this->_color, 12, 0, $this->_font );
 
 		return $this;
 	}

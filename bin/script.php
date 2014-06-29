@@ -75,14 +75,15 @@ $default_image = DefaultImager::factory()
 
 var_dump($default_image);
 //error check $arguments
-if( getclass($default_image)=='Error' )
+if( get_class($default_image)=='Error' )
 	die( 'Error creating default image: '.$default_image->get_message() );
 
 //resize and format image
 DefaultImager::factory()
 	->set_worker('imageLib')
 	->set_image( $default_image )
-	->set_text( $arguments->text )
+	->set_font( $arguments['font'] )
+	->set_text( $arguments['text'] )
 	->resize()
 	->display();
 
