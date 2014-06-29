@@ -13,7 +13,7 @@
 require_once('image.class.php');
 require_once('php_image_magician.php');
 
-class DefaultImage{
+class DefaultImager{
 
 	private $_color		= 'ffffff';
 	private $_dir		= 'assets/images';
@@ -40,14 +40,18 @@ class DefaultImage{
 		//get class name
 		if( $type=='create' )
 			$class = 'Image';
+		elseif( $type=='format' )
+			$class = '';
+		else
+			$this->error = new Error('Invalid class type: '.$type);
 
 		//construct and return instance
-		$obj = new ReflectionClass( $class );
-		return $obj->newInstanceArgs( $args );
-	}
+		if( !Error::is_error($this->error) ){
+			$obj = new ReflectionClass( $class );
+			return $obj->newInstanceArgs( $args );
+		}
 
-	public function load_image(){
-		
+		return new DefaultImage();
 	}
 
 	public function create(){
@@ -62,6 +66,8 @@ class DefaultImage{
 		}
 		else
 			$this->output( $this->_ext );
+
+		return $this;
 	}
 
 	/**
