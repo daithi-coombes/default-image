@@ -7,7 +7,7 @@
  * folder to redirect unkown images
  *
  * eg:
- * ErrorDocument 404 /modules/default_images/index.php
+ * ErrorDocument 404 /cms/modules/default_images/index.php
  *
  * @author daithi coombes
  */
@@ -28,6 +28,7 @@ if( $_SERVER['REDIRECT_STATUS']=='404' ){
 }
 
 //static vars
+global $font, $width, $height, $filename, $dir;
 $font 		= dirname(__FILE__) . '/assets/fonts/OpenSans.ttf';
 $width 		= $_GET['width'];
 $height 	= $_GET['height'];
@@ -42,4 +43,14 @@ $dir 		= 'assets/images';
 header('HTTP/1.1 200 OK');
 
 //load script
+$defaultimage_params = array(
+	'width' 		=> $width,
+	'height' 		=> $height,
+	'filename' 		=> $filename,
+	'dir' 			=> $dir,
+	'font' 			=> $font,
+	'background' 	=> $background,
+	'color' 		=> $color,
+	'text' 			=> $text
+);
 require_once( dirname(__FILE__) . '/bin/script.php');

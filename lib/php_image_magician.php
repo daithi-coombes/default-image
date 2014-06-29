@@ -2508,7 +2508,6 @@ class imageLib
     # Notes:
     #
   {
-
     if (!is_resource($this->imageResized)) { if ($this->debug) { die('saveImage: This is not a resource.'); }else{ die(); }}  
 
         switch($fileType)

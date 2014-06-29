@@ -20,6 +20,8 @@
  */
 define( 'BASE_DIR', dirname(dirname(__FILE__)) );
 
+require_once( BASE_DIR . '/lib/error.class.php');
+require_once( BASE_DIR . '/lib/cli.class.php');
 require_once( BASE_DIR . '/lib/image.class.php');
 require_once( BASE_DIR . '/lib/defaultimage.class.php');
 require_once( BASE_DIR . '/lib/php_image_magician.php');
@@ -28,19 +30,60 @@ require_once( BASE_DIR . '/lib/php_image_magician.php');
  * @todo get vars from cli arguments if available
  */
 
+//cli parse arguments
 
-//if default color image doesn't exist then create it
-$info = pathinfo($filename);
-$filename = $dir.'/'.$info['filename'].'-'.$background.'.'.$info['extension'];
-if( !file_exists( $filename ) ){
+//validate arguments
 
-	$create = DefaultImage::factory('create', $width, $height, $background);
-	$create->output( $info['extension'], $filename );
-}
+//load default image
+	//create new image?
+	//get image
 
+//format(width, height, text)
+//display
 
-$image = new imageLib('assets/images/default.png');
+global $defaultimage_params;
 
-$image->addText( $text, '20x20', 0, '#'.$color, 12, 0, $font );
-$image->cropImage( $width, $height );
-$image->displayImage();
+//get arguments from CLI or global scope
+$arguments = CLI::factory()
+	->set_required(array(
+		'color',
+		'width',
+		'height',
+		'text',
+		'background',
+		'filename',
+		'font',
+		'dir'
+	))
+	->validate_arguments( $defaultimage_params )
+	->get_arguments();
+
+//error check $arguments
+if( Error::is_error($arguments) )
+	die( 'Error getting paramaters: '.$arguments->get_message() );
+
+//get/create the default image
+$default_image = DefaultImager::factory()
+	->set_worker( 'Image' )
+	->set(array(
+		'color' 	=> $arguments['color'],
+		'filename'  => $arguments['filename']
+	))
+	->create();
+
+//error check $arguments
+if( Error::is_error($default_image) )
+	die( 'Error creating default image: '.$default_image->get_message() );
+
+//resize and format image
+$default_image = DefaultImager::factory()
+	->set_worker('imageLib')
+	->set_image( $default_image )
+	->set_font( $arguments['font'] )
+	->set_text( $arguments['text'] )
+	->resize( $arguments['width'], $arguments['height'] )
+	->display();
+
+//error report
+if( Error::is_error($default_image) )
+	die(' Error displaying default image: '.$default_image->get_message() );
