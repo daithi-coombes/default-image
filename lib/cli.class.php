@@ -5,16 +5,6 @@
 
 class CLI{
 
-	/** @var string Hexedecimal rgb string. Default 'ffffff' */
-	public $color 		= 'ffffff';
-	/** @var string Hexedecimal rgb string. Default 'c0c0c0' */
-	public $background 	= 'c0c0c0';
-	/** @var integer The width in pixels. Default '960' */
-	public $width 		= 960;
-	/** @var integer The height in pixels. Default '600' */
-	public $height 		= 600;
-	/** @var string The text to display. Default 'Image not found' */
-	public $text		= 'Image not found';
 	/** @var array Defaults array. An array of required params from CLI or 
 		global scope. */
 	private $required 	= array();
@@ -63,12 +53,15 @@ class CLI{
 	 * Will check cli for arguments, if none will pull from $_REQUEST.
 	 * @return CLI Returns this instance for chainging.
 	 */
-	public function validate_arguments(){
+	public function validate_arguments( $global_scope=null ){
 
-		$this->arguments = $this->get_cli_arguments();
+		//cli params
+		if( empty($global_scope) )
+			$this->arguments = $this->get_cli_arguments();
 
-		if( !$this->arguments )
-			$this->arguments = $this->get_global_arguments();
+		//global scope params
+		else
+			$this->arguments = $this->get_global_arguments( $global_scope );
 
 		//error report
 		if( !$this->arguments )
@@ -85,17 +78,21 @@ class CLI{
 	 * Get argumetns from global scope
 	 * @return array An array of arg=>value pairs
 	 */
-	private function get_global_arguments(){
+	private function get_global_arguments( array $arguments ){
 
+		//error report
 		if( !count($this->required) )
 			return false;
 
-		foreach( $this->required as $param )
-			if( empty($_GLOBALS[$param]) || !$_GLOBALS[$param] )
-				return false;
-			else
-				$args[ $param ] = $_GLOBALS[$param];
+		$arg_params = array_keys( $arguments );
+		if( array_diff( $this->required, $arg_params) )
+			return false;
 
-		return $args;
+		//set params
+		foreach( $this->required as $param )
+			$this->$param = $arguments;
+
+		//return
+		return $arguments;
 	}
 }

@@ -22,6 +22,8 @@ class DefaultImager{
 	private $_height	= 200;
 	private $_text		= null;
 	private $_width		= 200;
+	private $error 		= null;
+	private $worker		= '';
 
 	function __construct(){
 
@@ -29,43 +31,37 @@ class DefaultImager{
 
 	/**
 	 * Factory method
-	 * @return DefaultImage Returns new instance
+	 * @param  string $worker Default null. Class name to build
+	 * @return mixed         Default DefaultImage or worker instance if passed
 	 */
-	static public function factory( $type='create' ){
+	static public function factory( $worker=null ){
 
-		//get arguments
-		$args = func_get_args();
-		array_shift($args);
+		//construct worker
+		if( $worker ){
+			$args = func_get_args();
+			array_shift( $args );
 
-		//get class name
-		if( $type=='create' )
-			$class = 'Image';
-		elseif( $type=='format' )
-			$class = '';
-		else
-			$this->error = new Error('Invalid class type: '.$type);
-
-		//construct and return instance
-		if( !Error::is_error($this->error) ){
-			$obj = new ReflectionClass( $class );
+			$obj = new ReflectionClass( $worker );
 			return $obj->newInstanceArgs( $args );
 		}
 
-		return new DefaultImage();
+		//default DefaultImager
+		$ret = new DefaultImager();
+
+		return $ret;
 	}
 
 	public function create(){
 
-		//construct image
-		parent::__construct( $this->_width, $this->_height, $this->_color );
+		$this->worker = self::factory( $this->worker, $this->_width, $this->_height, $this->_color );
 
 		//output image
 		if( !empty($this->_filename) ){
 			$filename = $this->_dir . '/' . $this->_filename . '-' . $this->_color . '.' . $this->_ext;
-			$this->output( $this->_ext, $filename );
+			$this->worker->output( $this->_ext, $filename );
 		}
 		else
-			$this->output( $this->_ext );
+			$this->worker->output( $this->_ext );
 
 		return $this;
 	}
@@ -80,6 +76,17 @@ class DefaultImager{
 			$param = '_'.$param;
 			$this->$param = $val;
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Set worker class name
+	 * @param string $class_name The worker class name
+	 */
+	public function set_worker( $class_name ){
+
+		$this->worker = $class_name;
 
 		return $this;
 	}

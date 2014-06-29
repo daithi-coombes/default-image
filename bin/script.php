@@ -40,7 +40,8 @@ require_once( BASE_DIR . '/lib/php_image_magician.php');
 
 //format(width, height, text)
 //display
-session_start();
+
+global $defaultimage_params;
 
 //get arguments from CLI or global scope
 $arguments = CLI::factory()
@@ -49,28 +50,36 @@ $arguments = CLI::factory()
 		'width',
 		'height',
 		'text',
-		'background'
+		'background',
+		'filename',
+		'font',
+		'dir'
 	))
-	->validate_arguments()
+	->validate_arguments( $defaultimage_params )
 	->get_arguments();
 
 //error check $arguments
 if( Error::is_error($arguments) )
 	die( 'Error getting paramaters: '.$arguments->get_message() );
 
-//get/set the default image
-$default_image = DefaultImager::factory('create')
-	->set_width( $arguments->width )
-	->set_height( $arguments->height )
-	->set_color( $arguments->color )
+//get/create the default image
+$default_image = DefaultImager::factory()
+	->set_worker( 'Image' )
+	->set(array(
+		'width' 	=> $arguments['width'],
+		'height' 	=> $arguments['height'],
+		'color' 	=> $arguments['color'],
+		'filename'  => $arguments['filename']
+	))
 	->create();
+
 var_dump($default_image);
 //error check $arguments
 if( getclass($default_image)=='Error' )
 	die( 'Error creating default image: '.$default_image->get_message() );
 
 //resize and format image
-DefaultImager::factory('format')
+DefaultImager::factory('imageLib')
 	->set_image( $default_image )
 	->set_text( $arguments->text )
 	->resize()
