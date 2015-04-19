@@ -128,6 +128,16 @@ class DefaultImager{
 	}
 
 	/**
+	 * Set color
+	 * @param string $color Hex color code
+	 */
+	public function set_color( $color ){
+
+		$this->_color = $color;
+		return $this;
+	}
+
+	/**
 	 * Set the font
 	 * @param string $font The absolute path to the ttf font (websafe fonts
 	 * have issues)
@@ -218,6 +228,11 @@ class DefaultImage{
 								. ".{$this->info['extension']}";
 	}
 
+	/**
+	 * Format the color code
+	 * @param  string $color The input color code
+	 * @return string        The formated hex code
+	 */
 	function parse_color( $color ){
 
 		//make sure color is prepended with #
@@ -231,6 +246,11 @@ class DefaultImage{
 		return trim( $color, '#' );
 	}
 
+	/**
+	 * @link http://www.anyexample.com/programming/php/php_convert_rgb_from_to_html_hex_color.xml
+	 * @param  string $color A 3 or 6 digit hex string
+	 * @return integer        9 digit rgb integer
+	 */
 	function html2rgb($color){
 
 		$color = substr($color, 1);
@@ -249,6 +269,13 @@ class DefaultImage{
 		return array($r, $g, $b);
 	}
 
+	/**
+	 * @link http://www.anyexample.com/programming/php/php_convert_rgb_from_to_html_hex_color.xml
+	 * @param  integer  $r Red
+	 * @param  integer $g Green
+	 * @param  integer $b Blue
+	 * @return string     A 6 digit hex string
+	 */
 	function rgb2html($r, $g=-1, $b=-1){
 		if (is_array($r) && sizeof($r) == 3)
 		list($r, $g, $b) = $r;

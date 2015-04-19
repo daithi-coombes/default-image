@@ -2049,7 +2049,7 @@ class imageLib
   Add Text  
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/   
 
-  public function addText($text, $pos = '20x20', $padding = 0, $fontColor='#fff', $fontSize = 12, $angle = 0, $font = null)
+  public function addText($text, $pos = '20x20', $padding = 0, $fontColor='#000', $fontSize = 12, $angle = 0, $font = null)
     # Author:     Jarrod Oberto
   # Date:       18-11-09
     # Purpose:    Add text to an image
